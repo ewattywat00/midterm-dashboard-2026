@@ -21,15 +21,20 @@ select{flex:1;min-width:200px}
 .chip.dark{color:#fff}
 .nat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:14px}
 .nat h2{font-size:1.05rem;margin:0 0 6px}
-#panel{position:fixed;inset:auto 0 0 0;max-height:88vh;background:#fff;border-radius:16px 16px 0 0;box-shadow:0 -8px 30px #0003;transform:translateY(105%);transition:transform .25s ease;z-index:20;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}
-#panel.open{transform:none}
-#panel .ph{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line)}
-#panel .ph h2{margin:0;font-size:1.2rem;flex:1}
-#panel .close{min-width:44px;min-height:44px;font-size:1.4rem;line-height:1;border-radius:22px}
-#panel .pb{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 14px 24px}
+/* Panel: header (with close) is pinned; only the body scrolls. Works as mobile bottom sheet and desktop side panel. */
+#panel{position:fixed;left:0;right:0;bottom:0;top:auto;height:auto;max-height:88vh;max-height:calc(100dvh - 12px - env(safe-area-inset-top));background:#fff;border-radius:16px 16px 0 0;box-shadow:0 -8px 30px #0003;transform:translateY(105%);transition:transform .25s ease,visibility 0s linear .25s;visibility:hidden;z-index:20;display:flex;flex-direction:column;overflow:hidden;overscroll-behavior:contain}
+#panel.open{transform:none;visibility:visible;transition:transform .25s ease}
+#panel .ph{flex:0 0 auto;position:sticky;top:0;z-index:2;background:#fff;display:flex;align-items:center;gap:8px;padding:10px max(14px,env(safe-area-inset-right)) 10px max(14px,env(safe-area-inset-left));border-bottom:1px solid var(--line);border-radius:16px 16px 0 0}
+#panel .ph h2{margin:0;font-size:1.15rem;flex:1 1 auto;min-width:0;overflow-wrap:anywhere;line-height:1.3}
+#panel .close{flex:0 0 auto;width:48px;height:48px;min-width:48px;min-height:48px;padding:0;font-size:1.7rem;line-height:1;border-radius:24px;background:#f1f5f9;border:1px solid #cbd5e1;color:#0f172a;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;justify-content:center}
+#panel .close:active{background:#e2e8f0}
+#panel .close:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
+#panel .pb{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:10px max(14px,env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left))}
+#panel .pclose2{display:block;width:100%;margin:14px 0 4px;font-weight:600;cursor:pointer}
 #scrim{position:fixed;inset:0;background:#0004;opacity:0;pointer-events:none;transition:opacity .2s;z-index:19}
 #scrim.open{opacity:1;pointer-events:auto}
-@media(min-width:900px){#panel{inset:0 0 0 auto;width:440px;max-height:none;border-radius:0;transform:translateX(105%)}#panel.open{transform:none}main{padding-right:12px}}
+html.panel-open,html.panel-open body{overflow:hidden}
+@media(min-width:900px){#panel{top:0;bottom:0;left:auto;right:0;width:440px;height:100vh;height:100dvh;max-height:none;border-radius:0;transform:translateX(105%)}#panel .ph{border-radius:0;padding-top:max(10px,env(safe-area-inset-top))}#panel.open{transform:none}main{padding-right:12px}}
 .race{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:10px 0}
 .race h3{margin:0 0 4px;font-size:1.02rem}
 .tag{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 7px;border-radius:99px;background:#eef2ff;margin-right:4px}

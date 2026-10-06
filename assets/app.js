@@ -85,13 +85,16 @@ function openState(ab){
   else h+='<p class="kv">'+esc(H.note)+'</p>';
   h+='<p class="small">Source: '+esc(H.source)+', '+fmtDate(H.date)+' '+link(H.url)+'. District-level public polling not compiled in this build.</p></div>';
   h+='<p class="small">National context: '+esc(DATA.national.house_context)+'</p>';
+  h+='<button type="button" class="pclose2" data-close="1">Close</button>';
   document.getElementById("pbody").innerHTML=h; document.getElementById("pbody").scrollTop=0;
   document.getElementById("panel").classList.add("open"); document.getElementById("panel").setAttribute("aria-hidden","false");
   document.getElementById("scrim").classList.add("open");
+  document.documentElement.classList.add("panel-open");
+  try{document.getElementById("close").focus({preventScroll:true});}catch(_){}
   document.getElementById("pick").value=ab;
   if(history.replaceState) history.replaceState(null,"","#"+ab);
 }
-function closePanel(){document.getElementById("panel").classList.remove("open");document.getElementById("panel").setAttribute("aria-hidden","true");document.getElementById("scrim").classList.remove("open");if(history.replaceState)history.replaceState(null,"",location.pathname);}
+function closePanel(){document.documentElement.classList.remove("panel-open");document.getElementById("panel").classList.remove("open");document.getElementById("panel").setAttribute("aria-hidden","true");document.getElementById("scrim").classList.remove("open");if(history.replaceState)history.replaceState(null,"",location.pathname);}
 function drawNational(){
   var n=DATA.national, h='<h2>National picture</h2><p class="kv">'+esc(n.senate_context)+'</p><p class="kv">'+esc(n.house_context)+'</p>';
   h+='<div class="kv"><b>Generic congressional ballot — averages</b></div><ul class="pl">';
@@ -103,6 +106,7 @@ function drawNational(){
 }
 document.getElementById("close").onclick=closePanel;
 document.getElementById("scrim").onclick=closePanel;
+document.getElementById("pbody").addEventListener("click",function(e){if(e.target&&e.target.getAttribute&&e.target.getAttribute("data-close"))closePanel();});
 document.addEventListener("keydown",function(e){if(e.key==="Escape")closePanel();});
 fetch("data/races.json",{cache:"no-cache"}).then(function(r){return r.json();}).then(function(d){
   DATA=d; document.getElementById("upd").textContent=d.generated_pt;
