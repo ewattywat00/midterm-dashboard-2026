@@ -108,7 +108,15 @@ document.getElementById("close").onclick=closePanel;
 document.getElementById("scrim").onclick=closePanel;
 document.getElementById("pbody").addEventListener("click",function(e){if(e.target&&e.target.getAttribute&&e.target.getAttribute("data-close"))closePanel();});
 document.addEventListener("keydown",function(e){if(e.key==="Escape")closePanel();});
+function mergePositions(d,p){
+  if(!p||!p.states)return;
+  Object.keys(p.states).forEach(function(ab){var st=d.states[ab];if(!st)return;
+    p.states[ab].forEach(function(e){(st.races||[]).forEach(function(r){if(r.type!==e.type)return;
+      (r.candidates||[]).forEach(function(c){if(c.name===e.name&&!c.summary){c.summary=e.summary;c.source=e.source;}});});});});
+}
 fetch("data/races.json",{cache:"no-cache"}).then(function(r){return r.json();}).then(function(d){
+  return fetch("data/candidates.json",{cache:"no-cache"}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}).then(function(p){try{mergePositions(d,p);}catch(_){}return d;});
+}).then(function(d){
   DATA=d; document.getElementById("upd").textContent=d.generated_pt;
   drawMap(); drawPickers(); drawNational();
   var h=(location.hash||"").replace("#","").toUpperCase(); if(DATA.states[h]) openState(h);
